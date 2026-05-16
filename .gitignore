@@ -1,4 +1,10 @@
 node_modules/
 .DS_Store
-*.log
 ._*
+*.log
+*.tgz
+.env
+.env.*
+.xbuild/
+.pi-demo/
+progress.md

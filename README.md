@@ -95,9 +95,20 @@ npm run check
 
 This validates the package manifest, skill frontmatter, prompt frontmatter, and expected files without installing dependencies.
 
+## Demo evidence
+
+A real package-loaded demo run is summarized in [`docs/demo.md`](docs/demo.md).
+
 ## Smoke-test idea
 
-Use the fixture in `examples/smoke-fixture` or any disposable repo and ask:
+Use the fixture in `examples/smoke-fixture` or any disposable repo. First install fixture dependencies:
+
+```bash
+cd examples/smoke-fixture
+npm install
+```
+
+Then ask:
 
 ```text
 /skill:simple-build Build two independent utilities in separate worktrees, test them, review them, then merge them into main without pushing.

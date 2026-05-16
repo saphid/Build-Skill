@@ -37,5 +37,6 @@ assert.ok(prompt.includes('/skill:simple-build'));
 read('skills/simple-build/references/evidence.md');
 read('README.md');
 read('docs/design.md');
+read('docs/demo.md');
 
 console.log('Build Skill package check passed.');

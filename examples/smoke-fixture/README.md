@@ -1,6 +1,6 @@
 # Smoke fixture
 
-A disposable repo can test Build Skill with two independent utilities:
+A disposable repo can test Build Skill with two independent utilities. First run `npm install` in this fixture so `typescript` is available:
 
 ```text
 /skill:simple-build Build two independent utility Beads:
