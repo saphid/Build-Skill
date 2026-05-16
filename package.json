@@ -1,0 +1,25 @@
+{
+  "name": "build-skill",
+  "version": "0.1.0",
+  "description": "A lightweight /build workflow package for Pi: Beads, worktree coders, blocker-only review, and merge gates.",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-skill",
+    "agent-skills",
+    "build-workflow",
+    "worktrees",
+    "tdd"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saphid/Build-Skill.git"
+  },
+  "scripts": {
+    "check": "node scripts/check-package.mjs"
+  },
+  "pi": {
+    "skills": ["./skills"],
+    "prompts": ["./prompts"]
+  }
+}
