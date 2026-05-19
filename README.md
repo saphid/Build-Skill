@@ -5,29 +5,29 @@ Build Skill is a small Pi package that adds a `/build` prompt and the `simple-bu
 It captures a lightweight feature-delivery workflow that works well with coding agents:
 
 ```text
-plan Beads → run independent coder lanes in sandbox/worktrees → review each Bead → fix blockers → merge gate validates and integrates → evidence report
+plan Beads → run independent coder lanes in sandbox/worktrees → acceptance-aware blocker review + Codex Review closeout → fix blockers → merge gate validates, reviews, and integrates → evidence report
 ```
 
-It is intentionally **not** a heavy orchestration framework. It is a compact protocol for agents and operators who want parallel worktree coding, RGR/TDD, blocker-only review, and a separate merge gate without a fragile status machine.
+It is intentionally **not** a heavy orchestration framework. It is a compact protocol for agents and operators who want parallel worktree coding, RGR/TDD, acceptance-aware blocker-only review augmented by Codex Review closeout, and a separate merge gate without a fragile status machine.
 
 ## Install
 
 Install globally in Pi from GitHub:
 
 ```bash
-pi install git:github.com/saphid/Build-Skill
+pi install git:github.com/saphid/build-skill
 ```
 
 Equivalent HTTPS form:
 
 ```bash
-pi install https://github.com/saphid/Build-Skill
+pi install https://github.com/saphid/build-skill
 ```
 
 For a single trial run without adding it to settings:
 
 ```bash
-pi -e git:github.com/saphid/Build-Skill
+pi -e git:github.com/saphid/build-skill
 ```
 
 ## Use
@@ -52,10 +52,11 @@ You can also invoke the skill directly:
 - Parallel lanes only when file ownership is disjoint.
 - One sandbox/worktree branch per coder lane.
 - RGR/TDD for behavior, API, data, persistence, and correctness-sensitive logic.
-- Fresh blocker-only review per Bead.
-- Same-coder fix loop for blockers.
-- Separate merge reviewer for final validation and integration.
-- Evidence report with Beads, lanes, review verdicts, validation, proof, merge status, and risks.
+- Fresh acceptance-aware blocker-only review per Bead, with Codex Review as a second-model closeout.
+- Same-coder fix loop for blockers, followed by focused validation, acceptance review, and Codex Review reruns.
+- Separate merge reviewer for final validation, Codex Review closeout, and integration.
+- A running `implementation-notes.md` or `implementation-notes.html` when the build involves decisions outside the spec, changed assumptions, tradeoffs, plan deviations, or other context the user should know.
+- Evidence report with Beads, lanes, old-review verdicts, Codex Review commands/results, validation, proof, implementation notes summary, merge status, and risks.
 
 ## What it avoids
 
@@ -65,7 +66,9 @@ The skill deliberately avoids the failure modes of heavier automation:
 - no committed session transcripts, review feedback JSON, `.xbuild/run`, `node_modules`, `.env`, or local state;
 - no fake parallelism across overlapping files;
 - no separate proof branch that must merge multiple implementation branches unless an integration branch already exists;
-- no treating a working app as done when review, proof, or merge gates failed.
+- no blindly applying Codex findings without reading the code and filtering for scoped blockers;
+- no treating a clean raw Codex Review result as a substitute for acceptance/proof review;
+- no treating a working app as done when validation, accepted review blockers, proof, or merge gates failed.
 
 ## Package layout
 
@@ -111,7 +114,7 @@ npm install
 Then ask:
 
 ```text
-/skill:simple-build Build two independent utilities in separate worktrees, test them, review them, then merge them into main without pushing.
+/skill:simple-build Build two independent utilities in separate worktrees, test them, run acceptance-aware blocker review plus Codex Review closeout, then merge them into main without pushing.
 ```
 
 ## Security

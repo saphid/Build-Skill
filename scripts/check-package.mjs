@@ -26,6 +26,8 @@ const skillFm = frontmatter(skill, 'skills/simple-build/SKILL.md');
 assert.match(skillFm, /^name: simple-build$/m);
 assert.match(skillFm, /^description: .+/m);
 assert.ok(skill.includes('Coders never merge'));
+assert.ok(skill.includes('Codex Review'));
+assert.ok(skill.includes('codex-review'));
 assert.ok(skill.includes('Merge reviewer'));
 assert.ok(skill.includes('references/evidence.md'));
 

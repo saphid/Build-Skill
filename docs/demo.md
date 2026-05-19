@@ -5,7 +5,7 @@ This package was tested from GitHub with Pi using a disposable fixture repositor
 ## Command shape
 
 ```bash
-pi -e git:github.com/saphid/Build-Skill \
+pi -e git:github.com/saphid/build-skill \
   --session-dir /tmp/build-skill-demo-20260516-153422/sessions \
   --thinking minimal \
   -p '/skill:simple-build Demo run from the GitHub package. Build two independent utility Beads using separate git worktrees...'

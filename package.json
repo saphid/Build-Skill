@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/saphid/Build-Skill.git"
+    "url": "https://github.com/saphid/build-skill.git"
   },
   "scripts": {
     "check": "node scripts/check-package.mjs"
