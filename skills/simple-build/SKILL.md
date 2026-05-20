@@ -1,6 +1,6 @@
 ---
 name: simple-build
-description: Runs a lightweight feature-build workflow with small Beads, independent sandbox/worktree coding lanes, RGR/TDD, acceptance-aware blocker review with Codex Review closeout, and a separate merge gate. Use when the user invokes /build, asks to build a feature end-to-end, or wants orchestrator/coder/reviewer/merge-agent discipline without heavyweight automation.
+description: Runs a lightweight feature-build workflow with small Beads, independent sandbox/worktree coding lanes, RGR/TDD, acceptance-aware blocker review with Codex Review or x-hi fallback closeout, and a separate merge gate. Use when the user invokes /build, asks to build a feature end-to-end, or wants orchestrator/coder/reviewer/merge-agent discipline without heavyweight automation.
 ---
 
 # Simple Build
@@ -10,10 +10,10 @@ description: Runs a lightweight feature-build workflow with small Beads, indepen
 `/build` ships through a small gated pipeline:
 
 ```text
-plan Beads → run independent coder lanes in sandbox/worktrees → acceptance-aware blocker review + Codex Review closeout → fix blockers → merge gate validates, reviews, and integrates → evidence report
+plan Beads → run independent coder lanes in sandbox/worktrees → acceptance-aware blocker review + Codex/x-hi closeout → fix blockers → merge gate validates, reviews, and integrates → evidence report
 ```
 
-Coders never merge. The original acceptance-aware blocker review remains the source of truth. Reviewers use Codex Review as an extra second-model closeout, verify findings against the real code, accept only scoped blockers, and reject noise. A clean Codex result alone is never enough to PASS a Bead. The merge reviewer owns final validation, review closeout, and integration.
+Coders never merge. The original acceptance-aware blocker review remains the source of truth. Reviewers use Codex Review when Codex is available, otherwise a fresh x-hi/high-reasoning reviewer agent, as an extra second-model closeout. They verify findings against the real code, accept only scoped blockers, and reject noise. A clean Codex or x-hi result alone is never enough to PASS a Bead. The merge reviewer owns final validation, review closeout, and integration.
 
 ## Decision rules
 
@@ -69,9 +69,9 @@ A Bead can pass review only when the acceptance-aware review has no blockers and
 4. Mark which Beads can run in parallel. Do not fake parallelism for overlapping files.
 5. Create one sandbox/worktree branch per coder lane.
 6. Assign coders with the template below.
-7. Send finished Beads to fresh acceptance-aware blocker-only review with Codex Review closeout.
-8. Send blockers back to the original coder for one tight fix loop, then rerun focused validation, acceptance-aware review, and Codex Review.
-9. Send only PASS branches to a separate merge reviewer for final validation, Codex Review closeout, and integration.
+7. Send finished Beads to fresh acceptance-aware blocker-only review with Codex Review closeout when Codex is available, otherwise x-hi/high-reasoning fallback closeout.
+8. Send blockers back to the original coder for one tight fix loop, then rerun focused validation, acceptance-aware review, and the same Codex/x-hi closeout.
+9. Send only PASS branches to a separate merge reviewer for final validation, Codex/x-hi closeout, and integration.
 10. Final response reports Beads, parallel lanes, review commands/verdicts, validation/proof, implementation notes location/summary, merge status, and risks.
 
 ## Coder assignment template
@@ -111,7 +111,7 @@ Check only:
 - security/privacy/secrets;
 - obvious integration risks;
 - required implementation notes exist and are useful when the Bead made non-spec decisions, tradeoffs, changed assumptions, or plan deviations.
-Verify every accepted Codex finding by reading the real code path. Reject noise, speculative risks, broad rewrites, and out-of-scope polish with a one-line reason.
+Verify every accepted Codex or x-hi finding by reading the real code path. Reject noise, speculative risks, broad rewrites, and out-of-scope polish with a one-line reason.
 Return PASS or BLOCKED with: old-review verdict, Codex Review command/result or x-hi fallback command/result, accepted blockers, rejected findings, exact required fixes, files inspected, and tests/proof to rerun. Do not broaden scope. Do not merge.
 ```
 
