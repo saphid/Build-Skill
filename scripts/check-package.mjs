@@ -28,6 +28,7 @@ assert.match(skillFm, /^description: .+/m);
 assert.ok(skill.includes('Coders never merge'));
 assert.ok(skill.includes('Codex Review'));
 assert.ok(skill.includes('codex-review'));
+assert.ok(skill.includes('x-hi'));
 assert.ok(skill.includes('Merge reviewer'));
 assert.ok(skill.includes('references/evidence.md'));
 
@@ -35,6 +36,7 @@ const prompt = read('prompts/build.md');
 const promptFm = frontmatter(prompt, 'prompts/build.md');
 assert.match(promptFm, /^description: .+/m);
 assert.ok(prompt.includes('/skill:simple-build'));
+assert.ok(prompt.includes('x-hi'));
 
 read('skills/simple-build/references/evidence.md');
 read('README.md');

@@ -41,7 +41,7 @@ When Codex is available, follow this contract:
 - Reject speculative risks, unrealistic edge cases, broad rewrites, and fixes that over-complicate the codebase.
 - Accept blockers only for the Bead's acceptance criteria, scope discipline, tests/proof gaps, validation freshness, security/privacy/secrets, or obvious integration breakage.
 - Prefer small fixes at the right ownership boundary; no refactor unless it clearly fixes the blocker class.
-- If a review-triggered fix changes code, rerun focused tests, rerun the acceptance-aware blocker review, and rerun Codex Review on the same target until there are no accepted/actionable findings.
+- If a review-triggered fix changes code, rerun focused tests, rerun the acceptance-aware blocker review, and rerun Codex Review on the same target (or x-hi fallback if Codex becomes unavailable) until there are no accepted/actionable findings.
 - Do not push just to review.
 
 Target selection for this workflow:
