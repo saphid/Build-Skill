@@ -25,13 +25,15 @@ Coders never merge. The original acceptance-aware blocker review remains the sou
 - Keep a running `implementation-notes.md` or `implementation-notes.html` when the work requires decisions outside the spec, non-obvious tradeoffs, deviations from the plan, changed assumptions, or context the user should know. Prefer an existing project notes file if one exists; otherwise create one at the project root.
 - Stop and ask the user if review blockers imply a larger design change.
 
-## Codex Review contract
+## Review closeout contract
 
-Use the `codex-review` skill for Bead reviews and merge closeout when it is available (reference: https://github.com/steipete/agent-scripts/blob/main/skills/codex-review/SKILL.md). Follow its Contract, Pick Target, Context Efficiency, Helper, and Final Report guidance.
+Use Codex Review for Bead reviews and merge closeout **when the `codex` CLI is installed and authenticated**. Prefer the `codex-review` skill/helper when it is available (reference: https://github.com/steipete/agent-scripts/blob/main/skills/codex-review/SKILL.md); otherwise run plain `codex review` commands directly.
 
-Codex Review augments the old reviewer process; it does not replace it. Current Codex CLI targets reject custom prompts with `--uncommitted` or `--base`, so a clean raw Codex result only means the generic diff scan was clean. It can be strong when the Bead contract is visible in tracked or changed files, but it is weaker when acceptance criteria live only in the orchestrator prompt. The reviewer must still apply the Bead acceptance criteria, proof requirements, and scope checks manually.
+If Codex is not installed, not authenticated, rate-limited, or otherwise unavailable, run the same second-opinion closeout through a fresh **x-hi / high-reasoning reviewer agent** instead. The fallback reviewer must be independent of the coder lane, receive the Bead contract and diff target, perform the same blocker-only review, and return accepted findings, rejected/noise findings, exact files inspected, and tests/proof to rerun. Document the Codex failure and the x-hi fallback command/agent used.
 
-If that skill is unavailable, still follow the same contract with plain `codex review` commands:
+Codex/x-hi Review augments the old reviewer process; it does not replace it. A clean raw Codex result or clean x-hi pass is never enough to PASS a Bead unless the original acceptance-aware blocker review is also clean. Codex can be strong when the Bead contract is visible in tracked or changed files, but it is weaker when acceptance criteria live only in the orchestrator prompt. The reviewer must still apply the Bead acceptance criteria, proof requirements, and scope checks manually.
+
+When Codex is available, follow this contract:
 
 - Treat Codex output as advisory. Never blindly apply it.
 - Verify every accepted finding by reading the real code path and adjacent files.
@@ -49,9 +51,9 @@ Target selection for this workflow:
 - Already-integrated single change: `codex review --commit HEAD`.
 - Helper, if installed: prefer `~/.codex/skills/codex-review/scripts/codex-review` in auto/branch mode for branch work and `--mode commit --commit HEAD` for already-committed closeout.
 
-For context efficiency, default to a fresh subagent/filter when available. Ask it to run Codex Review, then perform the original acceptance/scope/proof review, and return only accepted actionable findings, rejected findings with one-line reasons, exact files inspected, and tests/proof to rerun. If the Bead contract is not already review-visible, include it in the reviewer prompt; do not rely on raw `codex review` to infer it.
+For context efficiency, default to a fresh subagent/filter when available. Ask it to run Codex Review if `codex` is available; otherwise ask it to run the x-hi/high-reasoning fallback review. It must then perform the original acceptance/scope/proof review and return only accepted actionable findings, rejected findings with one-line reasons, exact files inspected, and tests/proof to rerun. If the Bead contract is not already review-visible, include it in the reviewer prompt; do not rely on raw `codex review` or a generic fallback prompt to infer it.
 
-A Bead can pass review only when the acceptance-aware review has no blockers and the final Codex Review closeout has no accepted/actionable findings, or every remaining finding is explicitly rejected with a scoped reason.
+A Bead can pass review only when the acceptance-aware review has no blockers and the final Codex/x-hi closeout has no accepted/actionable findings, or every remaining finding is explicitly rejected with a scoped reason.
 
 ## Orchestrator checklist
 
@@ -95,10 +97,11 @@ Final report: changed files, implementation notes added/updated, proof artifacts
 ## Reviewer assignment template
 
 ```text
-Fresh acceptance-aware blocker-only review with Codex Review closeout for Bead <id> on <branch/path>.
-First run the original blocker review against the Bead acceptance criteria and proof requirements. Also use the codex-review skill if available; otherwise run the matching codex review command:
+Fresh acceptance-aware blocker-only review with Codex/x-hi closeout for Bead <id> on <branch/path>.
+First run the original blocker review against the Bead acceptance criteria and proof requirements. If `codex` is installed and authenticated, use the codex-review skill/helper when available or run the matching plain command:
 - dirty patch: codex review --uncommitted
 - committed branch: git fetch origin && codex review --base <base-ref>
+If Codex is unavailable, run the same closeout through a fresh x-hi/high-reasoning reviewer agent and document the Codex failure plus fallback agent/command used.
 If Codex cannot receive the Bead instructions and the Bead contract is not visible in the repo/diff, treat it as a generic advisory scan only; do not let a clean Codex result override acceptance/proof blockers.
 Check only:
 - acceptance criteria;
@@ -109,7 +112,7 @@ Check only:
 - obvious integration risks;
 - required implementation notes exist and are useful when the Bead made non-spec decisions, tradeoffs, changed assumptions, or plan deviations.
 Verify every accepted Codex finding by reading the real code path. Reject noise, speculative risks, broad rewrites, and out-of-scope polish with a one-line reason.
-Return PASS or BLOCKED with: old-review verdict, Codex Review command/result, accepted blockers, rejected findings, exact required fixes, files inspected, and tests/proof to rerun. Do not broaden scope. Do not merge.
+Return PASS or BLOCKED with: old-review verdict, Codex Review command/result or x-hi fallback command/result, accepted blockers, rejected findings, exact required fixes, files inspected, and tests/proof to rerun. Do not broaden scope. Do not merge.
 ```
 
 ## Merge reviewer assignment template
@@ -119,13 +122,13 @@ Merge only Beads with PASS review.
 Main/integration checkout must be clean.
 Integrate in dependency order.
 Run final validation: focused proof, typecheck, build/check, and visual/e2e proof when relevant.
-Run Codex Review closeout with the codex-review skill when available; otherwise use the correct target:
+Run Codex Review closeout when `codex` is installed/authenticated, using the codex-review skill/helper when available or the correct target directly:
 - branch/integration diff before merge: codex review --base <base-ref>
 - already-integrated commit: codex review --commit HEAD
-Formatting should happen before review. Tests and Codex Review may run in parallel only when formatting is already stable.
+If Codex is unavailable, run an x-hi/high-reasoning reviewer-agent closeout over the same integration diff/commit and document the fallback. Formatting should happen before review. Tests and Codex/x-hi Review may run in parallel only when formatting is already stable.
 If review or validation finds a blocker, stop and return it to the owning coder/Bead for a tight fix loop.
 After a clean merge: verify main, cleanup worktrees/branches, push only if repo rules require it.
-Final report: merged branches, validation output, Codex Review command/result, implementation notes location/summary, proof artifacts, cleanup/push status, risks.
+Final report: merged branches, validation output, Codex Review command/result or x-hi fallback command/result, implementation notes location/summary, proof artifacts, cleanup/push status, risks.
 ```
 
 ## Guardrails learned from evaluation
@@ -134,8 +137,8 @@ Final report: merged branches, validation output, Codex Review command/result, i
 - Do not commit `.xbuild/run`, `.xbuild/sessions`, review feedback JSON, `node_modules`, `.env`, temp files, or local state.
 - Prefer vertical Beads that own complete behavior over horizontal splits that cause merge conflicts.
 - Do not create a separate proof branch that must merge multiple implementation branches unless an integration branch already exists.
-- Codex Review findings are inputs to judgment, not automatic work items; verify, filter, and keep fixes small.
-- Codex Review is weaker than the original process for acceptance-specific requirements when the CLI cannot receive Bead instructions; keep the old acceptance/proof review as the gate.
+- Codex/x-hi Review findings are inputs to judgment, not automatic work items; verify, filter, and keep fixes small.
+- Codex Review is weaker than the original process for acceptance-specific requirements when the CLI cannot receive Bead instructions; x-hi fallback can also miss contract-specific requirements when under-prompted. Keep the old acceptance/proof review as the gate.
 - A working app is not enough: failed validation, accepted review blockers, failed proof, or failed merge gate means the build is not done.
 
 If the user asks why these rules exist, read `references/evidence.md`.
