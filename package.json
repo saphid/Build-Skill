@@ -1,13 +1,14 @@
 {
   "name": "build-skill",
   "version": "0.1.0",
-  "description": "A lightweight /build workflow package for Pi: Beads, worktree coders, blocker-only review, and merge gates.",
+  "description": "A lightweight /plan-build and /build workflow package for Pi: planning slices, Beads, worktree coders, blocker-only review, and merge gates.",
   "license": "MIT",
   "keywords": [
     "pi-package",
     "pi-skill",
     "agent-skills",
     "build-workflow",
+    "planning-slices",
     "worktrees",
     "tdd"
   ],
